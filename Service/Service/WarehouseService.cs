@@ -1,0 +1,14 @@
+﻿using Repository.Repository.Interface;
+using Service.Service.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Service.Service
+{
+    public class WarehouseService :IWarehouseService
+    {
+    }
+}

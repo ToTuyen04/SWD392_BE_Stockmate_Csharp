@@ -1,0 +1,56 @@
+
+using Microsoft.EntityFrameworkCore;
+using Repository.Data;
+using Service.Service;
+using Service.Service.Interface;
+
+namespace SWD392_BE_MOBILE
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            // Add services to the container.
+
+            // Add DbContext
+            var connectionString = "Server=swd392-mysql-server.mysql.database.azure.com;Port=3306;Database=InventoryManagement;User=duongtb;Password=17122004Admin;SslMode=Required;";
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseMySql(
+                    connectionString,
+                    new MySqlServerVersion(new Version(8, 0, 41)),
+                    mySqlOptions => mySqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null)
+                ));
+
+            // Register UnitOfWork and Services
+            builder.Services.AddScoped<Repository.Repository.Interface.IUnitOfWork, Repository.Repository.UnitOfWork>();
+            builder.Services.AddScoped<ICategoryService, Service.Service.CategoryService>();
+            builder.Services.AddScoped<IServiceProviders, ServiceProviders>();
+            builder.Services.AddControllers();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.Run();
+        }
+    }
+}
