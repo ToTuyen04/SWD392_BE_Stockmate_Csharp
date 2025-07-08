@@ -8,7 +8,7 @@ namespace SWD392_BE_MOBILE
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -28,12 +28,23 @@ namespace SWD392_BE_MOBILE
 
             // Register UnitOfWork and Services with default constructors
             builder.Services.AddScoped<IServiceProviders, ServiceProviders>();
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+                });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            // Seed data
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                await DataSeeder.SeedDataAsync(context);
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -48,7 +59,7 @@ namespace SWD392_BE_MOBILE
 
             app.MapControllers();
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

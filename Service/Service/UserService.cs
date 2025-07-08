@@ -14,6 +14,7 @@ namespace Service.Service
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
+
         public UserService() => _unitOfWork = new UnitOfWork();
         /// <summary>
         /// Create a new user

@@ -17,10 +17,9 @@ namespace SWD392_BE_MOBILE.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateUser([FromBody] UserCreationRequest userRequest)
+        public async Task<IActionResult> CreateUser([FromBody] UserCreationRequest request)
         {
-            if (userRequest == null || string.IsNullOrEmpty(userRequest.UserCode) ||
-                string.IsNullOrEmpty(userRequest.UserName) || string.IsNullOrEmpty(userRequest.Email))
+            if (!ModelState.IsValid)
             {
                 return BadRequest(new ApiResponse<UserResponse>
                 {
@@ -30,9 +29,19 @@ namespace SWD392_BE_MOBILE.Controllers
                 });
             }
 
+            if (request == null)
+            {
+                return BadRequest(new ApiResponse<UserResponse>
+                {
+                    Code = 400,
+                    Message = "User request is required.",
+                    Result = null
+                });
+            }
+
             try
             {
-                var createdUser = await _serviceProviders.UserService.CreateUser(userRequest);
+                var createdUser = await _serviceProviders.UserService.CreateUser(request);
                 var response = new ApiResponse<UserResponse>
                 {
                     Code = 1000,
@@ -75,10 +84,18 @@ namespace SWD392_BE_MOBILE.Controllers
             }
             catch (Exception ex)
             {
+                // Log the actual exception for debugging
+                Console.WriteLine($"Error creating user: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+
                 var errorResponse = new ApiResponse<UserResponse>
                 {
                     Code = 9999,
-                    Message = "An error occurred while creating the user.",
+                    Message = $"An error occurred while creating the user: {ex.Message}",
                     Result = null
                 };
                 return BadRequest(errorResponse);

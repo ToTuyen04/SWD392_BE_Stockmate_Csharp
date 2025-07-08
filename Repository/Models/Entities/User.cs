@@ -20,6 +20,9 @@ namespace Repository.Models.Entities
         [StringLength(6)]
         public string UserCode { get; set; }
 
+        [Column("role_id")]
+        public string RoleId { get; set; }
+
         [ForeignKey("RoleId")]
         public virtual Role Role { get; set; }
 
@@ -38,6 +41,9 @@ namespace Repository.Models.Entities
         [Required]
         [Column("password")]
         public string Password { get; set; }
+
+        [Column("warehouse_code")]
+        public string WarehouseCode { get; set; }
 
         [ForeignKey("WarehouseCode")]
         public virtual Warehouse Warehouse { get; set; }
