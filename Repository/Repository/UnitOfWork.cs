@@ -1,4 +1,5 @@
-﻿using Repository.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Data;
 using Repository.Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,6 @@ namespace Repository.Repository
         private WarehouseRepository? _warehouseRepo;
 
         public UnitOfWork() => _context = new ApplicationDbContext();
-
-        public UnitOfWork(ApplicationDbContext context) => _context = context;
 
         public ICategoryRepository CategoryRepository
         {

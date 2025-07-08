@@ -26,9 +26,7 @@ namespace SWD392_BE_MOBILE
                         errorNumbersToAdd: null)
                 ));
 
-            // Register UnitOfWork and Services
-            builder.Services.AddScoped<Repository.Repository.Interface.IUnitOfWork, Repository.Repository.UnitOfWork>();
-            builder.Services.AddScoped<ICategoryService, Service.Service.CategoryService>();
+            // Register UnitOfWork and Services with default constructors
             builder.Services.AddScoped<IServiceProviders, ServiceProviders>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

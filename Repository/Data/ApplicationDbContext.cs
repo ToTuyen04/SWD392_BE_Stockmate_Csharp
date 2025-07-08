@@ -26,6 +26,15 @@ namespace Repository.Data
         public DbSet<StockCheckProduct> StockCheckProducts { get; set; }
         public DbSet<InvalidatedToken> InvalidatedTokens { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                var connectionString = "Server=swd392-mysql-server.mysql.database.azure.com;Database=InventoryManagement;User=duongtb;Password=17122004Admin;SslMode=Required;";
+                optionsBuilder.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 41)));
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -17,8 +17,6 @@ namespace Service.Service
 
         public CategoryService() => _unitOfWork = new UnitOfWork();
 
-        public CategoryService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
-
         /// <summary>
         /// Create a new category
         /// Equivalent to Java: createCategory(CategoryRequest request)

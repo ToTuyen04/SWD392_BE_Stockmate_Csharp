@@ -25,15 +25,11 @@ namespace Service.Service
 
         public ServiceProviders() { }
 
-        public ServiceProviders(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
-
         public ICategoryService CategoryService
         {
             get
             {
-                return _categoryService ??= _unitOfWork != null
-                    ? new CategoryService(_unitOfWork)
-                    : new CategoryService();
+                return _categoryService ??= new CategoryService();
             }
         }
 

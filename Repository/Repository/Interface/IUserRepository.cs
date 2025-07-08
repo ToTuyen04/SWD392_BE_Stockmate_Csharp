@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Repository.Models.DTO.Request;
+using Repository.Models.DTO.Response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,6 @@ namespace Repository.Repository.Interface
 {
     public interface IUserRepository
     {
+        Task<UserResponse> Create(UserCreationRequest request);
     }
 }
