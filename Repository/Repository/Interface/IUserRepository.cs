@@ -1,15 +1,12 @@
 ﻿using Repository.Models.DTO.Request;
 using Repository.Models.DTO.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Repository.Models.Entities;
 
 namespace Repository.Repository.Interface
 {
     public interface IUserRepository
     {
         Task<UserResponse> Create(UserCreationRequest request);
+        Task<User> GetByEmailAsync(string email);
     }
 }

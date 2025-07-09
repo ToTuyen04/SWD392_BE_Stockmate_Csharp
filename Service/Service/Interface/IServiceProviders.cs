@@ -8,6 +8,7 @@ namespace Service.Service.Interface
 {
     public interface IServiceProviders
     {
+        IAuthenticationService AuthenticationService { get; }
         ICategoryService CategoryService { get; }
         IInvalidTokenService InvalidTokenService { get; }
         INoteItemService NoteItemService { get; }

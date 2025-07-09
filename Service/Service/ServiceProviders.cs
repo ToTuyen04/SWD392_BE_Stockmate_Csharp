@@ -11,6 +11,7 @@ namespace Service.Service
     public class ServiceProviders : IServiceProviders
     {
         private readonly IUnitOfWork _unitOfWork;
+        private IAuthenticationService _authenticationService;
         private ICategoryService _categoryService;
         private IInvalidTokenService _invalidTokenService;
         private INoteItemService _noteItemService;
@@ -110,6 +111,14 @@ namespace Service.Service
             get
             {
                 return _warehouseService ??= new WarehouseService();
+            }
+        }
+
+        public IAuthenticationService AuthenticationService
+        {
+            get
+            {
+                return _authenticationService ??= new AuthenticationService();
             }
         }
     }

@@ -107,5 +107,21 @@ namespace Repository.Repository
                 throw; // Re-throw to maintain the original exception handling
             }
         }
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            try
+            {
+                return await _context.Users
+                    .Include(u => u.Role)
+                    .Include(u => u.Warehouse)
+                    .FirstOrDefaultAsync(u => u.Email == email);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting user by email: {ex.Message}");
+                throw;
+            }
+        }
     }
 }
