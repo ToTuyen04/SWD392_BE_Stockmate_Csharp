@@ -1,13 +1,10 @@
 ﻿using Repository.Models.DTO.Request;
 using Repository.Models.DTO.Response;
+using Repository.Models.Exceptions;
+using Repository.Models.Enums;
 using Repository.Repository;
 using Repository.Repository.Interface;
 using Service.Service.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Service
 {
@@ -45,6 +42,12 @@ namespace Service.Service
         public Task<UserResponse> GetMyProfile(string userId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<UserResponse> GetMyInfo()
+        {
+            // TODO: Implement get current user info logic with proper repository methods
+            throw new AppException(ErrorCode.UNKNOWN_ERROR, "GetMyInfo service not fully implemented yet");
         }
     }
 }

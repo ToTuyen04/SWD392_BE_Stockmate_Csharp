@@ -38,8 +38,12 @@ namespace Repository.Models.Entities
         [Column("status")]
         public ProductStatus Status { get; set; }
 
+        [Required]
+        [Column("productType_code")]
+        public string ProductTypeCode { get; set; }
+
         [ForeignKey("ProductTypeCode")]
-        public virtual ProductType ProductType { get; set; }
+        public virtual ProductType? ProductType { get; set; }
 
         [Column("updated_at")]
         public DateTime? UpdatedAt { get; set; }

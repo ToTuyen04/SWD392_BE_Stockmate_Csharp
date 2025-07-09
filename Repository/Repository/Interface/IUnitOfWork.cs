@@ -13,7 +13,7 @@ namespace Repository.Repository.Interface
         IInvalidTokenRepository InvalidTokenRepository { get; }
         INoteItemRepository NoteItemRepository { get; }
         IProductRepository ProductRepository { get; }
-        IProducTypetRepository producTypetRepository { get; }
+        IProductTypeRepository ProductTypeRepository { get; }
         IRoleRepository RoleRepository { get; }
         IStockCheckNoteRepository StockCheckNoteRepository { get; }
         IStockCheckProductRepository StockCheckProductRepository { get; }

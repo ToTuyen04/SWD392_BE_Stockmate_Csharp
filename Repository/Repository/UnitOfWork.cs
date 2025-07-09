@@ -59,7 +59,7 @@ namespace Repository.Repository
             }
         }
 
-        public IProducTypetRepository producTypetRepository
+        public IProductTypeRepository ProductTypeRepository
         {
             get
             {

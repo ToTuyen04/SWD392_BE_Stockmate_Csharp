@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Repository.Models.DTO.Request;
+using Repository.Models.DTO.Response;
+using Repository.Models.Entities;
 
 namespace Repository.Repository.Interface
 {
-    public interface IProducTypetRepository
+    public interface IProductTypeRepository
     {
+        Task<ProductTypeResponse> Create(ProductTypeRequest request);
+        Task<ProductTypeResponse> GetByCode(string productTypeCode);
+        Task<List<ProductTypeResponse>> GetAll();
+        Task<ProductTypeResponse> Update(string productTypeCode, ProductTypeRequest request);
+        Task Delete(string productTypeCode);
+        Task<ProductType> GetEntityByCode(string productTypeCode);
     }
 }

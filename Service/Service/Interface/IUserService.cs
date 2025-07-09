@@ -12,5 +12,6 @@ namespace Service.Service.Interface
     {
         Task<UserResponse> CreateUser(UserCreationRequest userRequest);
         Task<UserResponse> GetMyProfile(string userId);
+        Task<UserResponse> GetMyInfo();
     }
 }

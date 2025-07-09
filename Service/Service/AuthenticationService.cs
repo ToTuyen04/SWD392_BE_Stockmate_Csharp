@@ -8,6 +8,8 @@ using System.Security.Claims;
 using System.Text;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
+using Repository.Models.Enums;
+using Repository.Models.Exceptions;
 
 namespace Service.Service
 {
@@ -22,90 +24,60 @@ namespace Service.Service
 
         public async Task<AuthenticationResponse> Authenticate(AuthenticationRequest request)
         {
-            try
+            // Find user by email
+            var user = await _unitOfWork.UserRepository.GetByEmailAsync(request.Email);
+
+            if (user == null)
             {
-                // Find user by email
-                var user = await _unitOfWork.UserRepository.GetByEmailAsync(request.Email);
-
-                if (user == null)
-                {
-                    throw new UnauthorizedAccessException("Invalid email or password.");
-                }
-
-                // Verify password
-                if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
-                {
-                    throw new UnauthorizedAccessException("Invalid email or password.");
-                }
-
-                // Generate JWT token
-                var token = GenerateJwtToken(user);
-
-                return new AuthenticationResponse
-                {
-                    Token = token,
-                    Authenticated = true,
-                    UserCode = user.UserCode,
-                    UserName = user.UserName,
-                    FullName = user.FullName,
-                    Email = user.Email,
-                    Role = user.Role
-                };
+                throw new AppException(ErrorCode.EMAIL_NOT_EXIST);
             }
-            catch (UnauthorizedAccessException)
+
+            // Verify password
+            bool authenticated = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+
+            if (!authenticated)
             {
-                throw;
+                throw new AppException(ErrorCode.UNAUTHENTICATED);
             }
-            catch (Exception ex)
+
+            // Generate JWT token
+            var token = GenerateJwtToken(user);
+
+            return new AuthenticationResponse
             {
-                throw new Exception("An error occurred during authentication.", ex);
-            }
+                Token = token,
+                Authenticated = true,
+                UserCode = user.UserCode,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email,
+                Role = user.Role
+            };
         }
 
         public async Task<IntrospectResponse> Introspect(IntrospectRequest request)
         {
+            var token = request.Token;
+            bool isValid = true;
+
             try
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_jwtSecret);
-
-                tokenHandler.ValidateToken(request.Token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidIssuer = _issuer,
-                    ValidateAudience = true,
-                    ValidAudience = _audience,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
-
-                // Check if token is in invalidated tokens list
-                var jwtToken = (JwtSecurityToken)validatedToken;
-                var jti = jwtToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
-
-                if (!string.IsNullOrEmpty(jti))
-                {
-                    var invalidatedToken = await _unitOfWork.InvalidTokenRepository.GetByIdAsync(jti);
-                    if (invalidatedToken != null)
-                    {
-                        return new IntrospectResponse { Valid = false };
-                    }
-                }
-
-                return new IntrospectResponse { Valid = true };
+                await VerifyToken(token);
             }
-            catch
+            catch (AppException)
             {
-                return new IntrospectResponse { Valid = false };
+                isValid = false;
             }
+
+            return new IntrospectResponse { Valid = isValid };
         }
 
         public async Task Logout(LogoutRequest request)
         {
             try
             {
+                var signedToken = await VerifyToken(request.Token);
+
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var jwtToken = tokenHandler.ReadJwtToken(request.Token);
 
@@ -123,9 +95,10 @@ namespace Service.Service
                     });
                 }
             }
-            catch (Exception ex)
+            catch (AppException)
             {
-                throw new Exception("An error occurred during logout.", ex);
+                // Token already expired, log info but don't throw
+                Console.WriteLine("Token đã hết hạn");
             }
         }
 
@@ -153,6 +126,51 @@ namespace Service.Service
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        private async Task<JwtSecurityToken> VerifyToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
+
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = _issuer,
+                    ValidateAudience = true,
+                    ValidAudience = _audience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+
+                // Check if token is in invalidated tokens list
+                var jti = jwtToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
+
+                if (!string.IsNullOrEmpty(jti))
+                {
+                    var invalidatedToken = await _unitOfWork.InvalidTokenRepository.GetByIdAsync(jti);
+                    if (invalidatedToken != null)
+                    {
+                        throw new AppException(ErrorCode.UNAUTHENTICATED);
+                    }
+                }
+
+                return jwtToken;
+            }
+            catch (SecurityTokenException)
+            {
+                throw new AppException(ErrorCode.UNAUTHENTICATED);
+            }
+            catch (ArgumentException)
+            {
+                throw new AppException(ErrorCode.UNAUTHENTICATED);
+            }
         }
     }
 }

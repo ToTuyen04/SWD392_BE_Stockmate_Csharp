@@ -28,7 +28,8 @@ namespace Repository.Repository
                     Size = p.Size,
                     Color = p.Color,
                     Quantity = p.Quantity,
-                    ProductTypeName = p.ProductType.ProductTypeName
+                    ProductTypeName = p.ProductType.ProductTypeName,
+                    Status = p.Status
                 })
                 .ToListAsync();
             return products;
@@ -46,56 +47,69 @@ namespace Repository.Repository
                     Size = p.Size,
                     Color = p.Color,
                     Quantity = p.Quantity,
-                    ProductTypeName = p.ProductType.ProductTypeName
+                    ProductTypeName = p.ProductType.ProductTypeName,
+                    Status = p.Status
                 })
                 .FirstOrDefaultAsync();
             return product;
         }
 
+        public async Task<Models.Entities.Product?> GetEntityByCode(string productCode)
+        {
+            return await _context.Products
+                .FirstOrDefaultAsync(p => p.ProductCode == productCode);
+        }
+
         public async Task<ProductResponse> Create(ProductRequest request)
         {
-            // Check if product code already exists
-            var existingProduct = await _context.Products
-                .FirstOrDefaultAsync(p => p.ProductCode == request.ProductCode);
-
-            if (existingProduct != null)
+            try
             {
-                throw new InvalidOperationException($"Product with code '{request.ProductCode}' already exists.");
+                // Find ProductType by ProductTypeCode - validate first like Java
+                var productType = await _context.ProductTypes
+                    .FirstOrDefaultAsync(pt => pt.ProductTypeCode == request.ProductTypeCode);
+
+                if (productType == null)
+                {
+                    throw new KeyNotFoundException($"ProductType with code '{request.ProductTypeCode}' not found.");
+                }
+
+                var product = new Models.Entities.Product
+                {
+                    ProductId = Guid.NewGuid().ToString(),
+                    ProductCode = request.ProductCode,
+                    ProductName = request.ProductName,
+                    Size = request.Size,
+                    Color = request.Color,
+                    Quantity = request.Quantity,
+                    Status = ProductStatus.instock, // Default status like Java
+                    ProductTypeCode = request.ProductTypeCode,
+                };
+
+                // Don't set navigation property to avoid EF confusion
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+
+                return new ProductResponse
+                {
+                    ProductCode = product.ProductCode,
+                    ProductName = product.ProductName,
+                    Size = product.Size,
+                    Color = product.Color,
+                    Quantity = product.Quantity,
+                    ProductTypeName = productType.ProductTypeName,
+                    Status = product.Status
+                };
             }
-
-            // Find ProductType by ProductTypeCode
-            var productType = await _context.ProductTypes
-                .FirstOrDefaultAsync(pt => pt.ProductTypeCode == request.ProductTypeCode);
-
-            if (productType == null)
+            catch (Exception ex)
             {
-                throw new KeyNotFoundException($"ProductType with code '{request.ProductTypeCode}' not found.");
+                Console.WriteLine($"Error creating product: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                throw;
             }
-
-            var product = new Models.Entities.Product
-            {
-                ProductId = Guid.NewGuid().ToString(),
-                ProductCode = request.ProductCode,
-                ProductName = request.ProductName,
-                Size = request.Size,
-                Color = request.Color,
-                Quantity = request.Quantity,
-                Status = ProductStatus.instock,
-                ProductType = productType
-            };
-
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-
-            return new ProductResponse
-            {
-                ProductCode = product.ProductCode,
-                ProductName = product.ProductName,
-                Size = product.Size,
-                Color = product.Color,
-                Quantity = product.Quantity,
-                ProductTypeName = productType.ProductTypeName
-            };
         }
 
         public async Task<ProductResponse> Update(string productCode, ProductRequest request)
@@ -124,7 +138,8 @@ namespace Repository.Repository
                 Size = product.Size,
                 Color = product.Color,
                 Quantity = product.Quantity,
-                ProductTypeName = product.ProductType.ProductTypeName
+                ProductTypeName = product.ProductType.ProductTypeName,
+                Status = product.Status
             };
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Repository.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,6 @@ namespace Repository.Models.DTO.Response
         public string Color { get; set; }
         public int Quantity { get; set; }
         public string ProductTypeName { get; set; }
+        public ProductStatus Status { get; set; }
     }
 }

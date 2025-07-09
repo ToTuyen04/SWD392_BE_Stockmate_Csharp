@@ -24,6 +24,10 @@ namespace Repository.Models.Entities
         [Column("price")]
         public double? Price { get; set; }
 
+        [Required]
+        [Column("category_code")]
+        public string CategoryCode { get; set; }
+
         [ForeignKey("CategoryCode")]
         public virtual Category Category { get; set; }
     }

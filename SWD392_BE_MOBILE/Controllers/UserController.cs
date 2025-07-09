@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Repository.Models.DTO.Request;
 using Repository.Models.DTO.Response;
+using Repository.Models.Exceptions;
+using Repository.Models.Enums;
 using Service.Service.Interface;
 
 namespace SWD392_BE_MOBILE.Controllers
@@ -16,7 +18,7 @@ namespace SWD392_BE_MOBILE.Controllers
             _serviceProviders = serviceProviders;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCreationRequest request)
         {
             if (!ModelState.IsValid)
@@ -96,6 +98,48 @@ namespace SWD392_BE_MOBILE.Controllers
                 {
                     Code = 9999,
                     Message = $"An error occurred while creating the user: {ex.Message}",
+                    Result = null
+                };
+                return BadRequest(errorResponse);
+            }
+        }
+
+        /// <summary>
+        /// Get current user profile information
+        /// </summary>
+        [HttpGet("info")]
+        public async Task<IActionResult> GetMyInfo()
+        {
+            try
+            {
+                var result = await _serviceProviders.UserService.GetMyInfo();
+                var response = new ApiResponse<UserResponse>
+                {
+                    Code = 1000,
+                    Message = "User profile retrieved successfully.",
+                    Result = result
+                };
+                return Ok(response);
+            }
+            catch (AppException ex)
+            {
+                var errorResponse = new ApiResponse<UserResponse>
+                {
+                    Code = (int)ex.ErrorCode,
+                    Message = ex.Message,
+                    Result = null
+                };
+                return BadRequest(errorResponse);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting user profile: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+
+                var errorResponse = new ApiResponse<UserResponse>
+                {
+                    Code = (int)ErrorCode.UNCATEGORIZED_EXCEPTION,
+                    Message = "An error occurred while retrieving user profile.",
                     Result = null
                 };
                 return BadRequest(errorResponse);

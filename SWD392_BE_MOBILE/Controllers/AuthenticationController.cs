@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Repository.Models.DTO.Request;
 using Repository.Models.DTO.Response;
+using Repository.Models.Exceptions;
+using Repository.Models.Enums;
 using Service.Service.Interface;
 
 namespace SWD392_BE_MOBILE.Controllers
@@ -44,15 +46,21 @@ namespace SWD392_BE_MOBILE.Controllers
                 };
                 return Ok(response);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (AppException ex)
             {
                 var errorResponse = new ApiResponse<AuthenticationResponse>
                 {
-                    Code = 1004, // UNAUTHENTICATED
+                    Code = (int)ex.ErrorCode,
                     Message = ex.Message,
                     Result = null
                 };
-                return Unauthorized(errorResponse);
+
+                // Return appropriate HTTP status based on error code
+                return ex.ErrorCode switch
+                {
+                    ErrorCode.EMAIL_NOT_EXIST or ErrorCode.UNAUTHENTICATED => Unauthorized(errorResponse),
+                    _ => BadRequest(errorResponse)
+                };
             }
             catch (Exception ex)
             {
@@ -65,7 +73,7 @@ namespace SWD392_BE_MOBILE.Controllers
 
                 var errorResponse = new ApiResponse<AuthenticationResponse>
                 {
-                    Code = 9999,
+                    Code = (int)ErrorCode.UNCATEGORIZED_EXCEPTION,
                     Message = "An error occurred during authentication.",
                     Result = null
                 };
@@ -100,6 +108,16 @@ namespace SWD392_BE_MOBILE.Controllers
                 };
                 return Ok(response);
             }
+            catch (AppException ex)
+            {
+                var errorResponse = new ApiResponse<IntrospectResponse>
+                {
+                    Code = (int)ex.ErrorCode,
+                    Message = ex.Message,
+                    Result = null
+                };
+                return BadRequest(errorResponse);
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error during token introspection: {ex.Message}");
@@ -107,7 +125,7 @@ namespace SWD392_BE_MOBILE.Controllers
 
                 var errorResponse = new ApiResponse<IntrospectResponse>
                 {
-                    Code = 9999,
+                    Code = (int)ErrorCode.UNCATEGORIZED_EXCEPTION,
                     Message = "An error occurred during token introspection.",
                     Result = null
                 };
@@ -142,6 +160,16 @@ namespace SWD392_BE_MOBILE.Controllers
                 };
                 return Ok(response);
             }
+            catch (AppException ex)
+            {
+                var errorResponse = new ApiResponse<object>
+                {
+                    Code = (int)ex.ErrorCode,
+                    Message = ex.Message,
+                    Result = null
+                };
+                return BadRequest(errorResponse);
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error during logout: {ex.Message}");
@@ -149,7 +177,7 @@ namespace SWD392_BE_MOBILE.Controllers
 
                 var errorResponse = new ApiResponse<object>
                 {
-                    Code = 9999,
+                    Code = (int)ErrorCode.UNCATEGORIZED_EXCEPTION,
                     Message = "An error occurred during logout.",
                     Result = null
                 };
