@@ -372,7 +372,7 @@ FodyWeavers.xsd
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
+# *.sln cho phép push file .sln
 *.sw?
 
 .env
