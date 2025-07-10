@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Repository.Data;
 using Service.Service;
 using Service.Service.Interface;
+using SWD392_BE_MOBILE.Configuration;
 
 
 namespace SWD392_BE_MOBILE
@@ -29,6 +30,10 @@ namespace SWD392_BE_MOBILE
 
             // Register UnitOfWork and Services with default constructors
             builder.Services.AddScoped<IServiceProviders, ServiceProviders>();
+
+            // Configure CORS - matching Java project configuration
+            builder.Services.ConfigureCors();
+
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -55,6 +60,9 @@ namespace SWD392_BE_MOBILE
             }
 
             app.UseHttpsRedirection();
+
+            // Enable CORS - must be before UseAuthorization
+            app.UseCorsConfiguration();
 
             app.UseAuthorization();
 
