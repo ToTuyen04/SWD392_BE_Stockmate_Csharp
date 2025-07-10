@@ -92,6 +92,32 @@ namespace Repository.Data
                 .HasPrincipalKey(w => w.WarehouseCode)
                 .IsRequired(false);
 
+            // StockCheckNote relationships
+            modelBuilder.Entity<StockCheckNote>()
+                .HasOne(scn => scn.Warehouse)
+                .WithMany()
+                .HasForeignKey(scn => scn.WarehouseCode)
+                .HasPrincipalKey(w => w.WarehouseCode);
+
+            modelBuilder.Entity<StockCheckNote>()
+                .HasOne(scn => scn.Checker)
+                .WithMany()
+                .HasForeignKey(scn => scn.CheckerUserCode)
+                .HasPrincipalKey(u => u.UserCode);
+
+            // StockCheckProduct relationships
+            modelBuilder.Entity<StockCheckProduct>()
+                .HasOne(scp => scp.StockCheckNote)
+                .WithMany(scn => scn.StockCheckProducts)
+                .HasForeignKey(scp => scp.StockCheckNoteId)
+                .HasPrincipalKey(scn => scn.StockCheckNoteId);
+
+            modelBuilder.Entity<StockCheckProduct>()
+                .HasOne(scp => scp.Product)
+                .WithMany()
+                .HasForeignKey(scp => scp.ProductCode)
+                .HasPrincipalKey(p => p.ProductCode);
+
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UserCode)
                 .IsUnique();

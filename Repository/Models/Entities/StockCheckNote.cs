@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repository.Models.Entities
 {
-    [Table("StockCheckNote")]
+    [Table("stockchecknote")]
     public class StockCheckNote
     {
         [Key]
@@ -17,8 +17,14 @@ namespace Repository.Models.Entities
         [Column("date_time")]
         public DateTime DateTime { get; set; }
 
+        [Column("warehouse_code")]
+        public string WarehouseCode { get; set; }
+
         [ForeignKey("WarehouseCode")]
         public virtual Warehouse Warehouse { get; set; }
+
+        [Column("checker")]
+        public string CheckerUserCode { get; set; }
 
         [ForeignKey("CheckerUserCode")]
         public virtual User Checker { get; set; }
@@ -26,7 +32,7 @@ namespace Repository.Models.Entities
         [Column("description")]
         public string Description { get; set; }
 
-        [Column("status")]
+        [Column("stockCheck_status")]
         public StockCheckStatus StockCheckStatus { get; set; }
 
         public virtual ICollection<StockCheckProduct> StockCheckProducts { get; set; }

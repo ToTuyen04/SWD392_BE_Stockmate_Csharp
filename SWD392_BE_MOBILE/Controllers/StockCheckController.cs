@@ -36,7 +36,7 @@ namespace SWD392_BE_MOBILE.Controllers
 
             try
             {
-                var result = await _serviceProviders.StockCheckNoteService.CreateStockCheckNote(request);
+                var result = await _serviceProviders.StockCheckService.CreateStockCheckNote(request);
                 var response = new ApiResponse<StockCheckNoteResponse>
                 {
                     Code = 1000,
@@ -78,7 +78,7 @@ namespace SWD392_BE_MOBILE.Controllers
         {
             try
             {
-                var result = await _serviceProviders.StockCheckNoteService.GetAllStockCheckNotes();
+                var result = await _serviceProviders.StockCheckService.GetAllStockCheckNotes();
                 var response = new ApiResponse<List<StockCheckNoteResponse>>
                 {
                     Code = 1000,
@@ -119,7 +119,7 @@ namespace SWD392_BE_MOBILE.Controllers
         {
             try
             {
-                var result = await _serviceProviders.StockCheckNoteService.GetStockCheckNotesByWarehouse(warehouseCode);
+                var result = await _serviceProviders.StockCheckService.GetStockCheckNotesByWarehouse(warehouseCode);
                 var response = new ApiResponse<List<StockCheckNoteResponse>>
                 {
                     Code = 1000,
@@ -160,7 +160,7 @@ namespace SWD392_BE_MOBILE.Controllers
         {
             try
             {
-                var result = await _serviceProviders.StockCheckNoteService.ApproveStockCheck(id);
+                var result = await _serviceProviders.StockCheckService.ApproveStockCheck(id);
                 var response = new ApiResponse<StockCheckNoteResponse>
                 {
                     Code = 1000,
@@ -201,7 +201,7 @@ namespace SWD392_BE_MOBILE.Controllers
         {
             try
             {
-                var result = await _serviceProviders.StockCheckNoteService.FinalizeStockCheck(id, isFinished);
+                var result = await _serviceProviders.StockCheckService.FinalizeStockCheck(id, isFinished);
                 var response = new ApiResponse<StockCheckNoteResponse>
                 {
                     Code = 1000,
@@ -246,11 +246,11 @@ namespace SWD392_BE_MOBILE.Controllers
 
                 if (string.IsNullOrWhiteSpace(status))
                 {
-                    result = await _serviceProviders.StockCheckNoteService.GetAllStockCheckNotes();
+                    result = await _serviceProviders.StockCheckService.GetAllStockCheckNotes();
                 }
                 else
                 {
-                    result = await _serviceProviders.StockCheckNoteService.GetStockCheckNotesByStatus(status);
+                    result = await _serviceProviders.StockCheckService.GetStockCheckNotesByStatus(status);
                 }
 
                 var response = new ApiResponse<List<StockCheckNoteResponse>>

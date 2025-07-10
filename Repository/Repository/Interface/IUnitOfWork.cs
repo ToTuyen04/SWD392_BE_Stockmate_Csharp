@@ -20,6 +20,7 @@ namespace Repository.Repository.Interface
         IStockTransactionRepository StockTransactionRepository { get; }
         IUserRepository UserRepository { get; }
         IWarehouseRepository WarehouseRepository { get; }
+        IExchangeNoteRepository ExchangeNoteRepository { get; }
 
         int SaveChangesWithTransaction();
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Models.Entities
 {
-    [Table("Warehouse")]
+    [Table("warehouse")]
     [Index(nameof(WarehouseCode), IsUnique = true)]
     public class Warehouse
     {

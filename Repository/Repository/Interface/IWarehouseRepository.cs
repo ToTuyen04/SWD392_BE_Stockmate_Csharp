@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Repository.Models.Entities;
 
 namespace Repository.Repository.Interface
 {
     public interface IWarehouseRepository
     {
+        Task<Warehouse> GetByCode(string warehouseCode);
     }
 }

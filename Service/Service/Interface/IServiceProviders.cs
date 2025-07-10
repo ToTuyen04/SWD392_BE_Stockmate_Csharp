@@ -15,8 +15,7 @@ namespace Service.Service.Interface
         IProductService ProductService { get; }
         IProductTypeService ProductTypeService { get; }
         IRoleService RoleService { get; }
-        IStockCheckNoteService StockCheckNoteService { get; }
-        IStockCheckProductService StockCheckProductService { get; }
+        IStockCheckService StockCheckService { get; }
         IStockTransactionService StockTransactionService { get; }
         IUserService UserService { get; }
         IWarehouseService WarehouseService { get; }

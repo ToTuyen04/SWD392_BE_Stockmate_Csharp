@@ -24,6 +24,7 @@ namespace Repository.Repository
         private StockTransactionRepository? _stockTransactionRepo;
         private UserRepository? _userRepo;
         private WarehouseRepository? _warehouseRepo;
+        private ExchangeNoteRepository? _exchangeNoteRepo;
 
         public UnitOfWork() => _context = new ApplicationDbContext();
 
@@ -140,6 +141,14 @@ namespace Repository.Repository
             }
 
             return result;
+        }
+
+        public IExchangeNoteRepository ExchangeNoteRepository
+        {
+            get
+            {
+                return _exchangeNoteRepo ??= new ExchangeNoteRepository(_context);
+            }
         }
     }
 }

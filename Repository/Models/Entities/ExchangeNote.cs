@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repository.Models.Entities
 {
-    [Table("ExchangeNote")]
+    [Table("exchangenote")]
     public class ExchangeNote
     {
         [Key]
@@ -22,20 +22,28 @@ namespace Repository.Models.Entities
         public StockExchangeStatus Status { get; set; }
 
         [Required]
-        [Column("transaction_type")]
+        [Column("transactionType")]
         public StockTransactionType TransactionType { get; set; }
 
+        [Column("source_warehouse_code")]
+        public string? SourceWarehouseCode { get; set; }
         [ForeignKey("SourceWarehouseCode")]
-        public virtual Warehouse SourceWarehouse { get; set; }
+        public virtual Warehouse? SourceWarehouse { get; set; }
 
+        [Column("destination_warehouse_code")]
+        public string? DestinationWarehouseCode { get; set; }
         [ForeignKey("DestinationWarehouseCode")]
-        public virtual Warehouse DestinationWarehouse { get; set; }
+        public virtual Warehouse? DestinationWarehouse { get; set; }
 
+        [Column("created_by")]
+        public string CreatedByUserCode { get; set; }
         [ForeignKey("CreatedByUserCode")]
         public virtual User CreatedBy { get; set; }
 
+        [Column("approved_by")]
+        public string? ApprovedByUserCode { get; set; }
         [ForeignKey("ApprovedByUserCode")]
-        public virtual User ApprovedBy { get; set; }
+        public virtual User? ApprovedBy { get; set; }
 
         public virtual ICollection<NoteItem> NoteItems { get; set; }
 

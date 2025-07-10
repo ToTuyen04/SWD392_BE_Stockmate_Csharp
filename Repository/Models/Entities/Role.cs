@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repository.Models.Entities
 {
-    [Table("Role")]
+    [Table("role")]
     public class Role
     {
         [Key]

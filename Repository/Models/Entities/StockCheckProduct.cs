@@ -4,15 +4,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repository.Models.Entities
 {
-    [Table("StockCheckProduct")]
+    [Table("stockcheckproduct")]
     public class StockCheckProduct
     {
         [Key]
         [Column("stockCheckProduct_id")]
         public string StockCheckProductId { get; set; }
 
+        [Column("stockCheckNote_id")]
+        public string StockCheckNoteId { get; set; }
+
         [ForeignKey("StockCheckNoteId")]
         public virtual StockCheckNote StockCheckNote { get; set; }
+
+        [Column("product_code")]
+        public string ProductCode { get; set; }
 
         [ForeignKey("ProductCode")]
         public virtual Product Product { get; set; }
@@ -37,12 +43,17 @@ namespace Repository.Models.Entities
         [Column("expected_quantity")]
         public int ExpectedQuantity { get; set; }
 
+        [Required]
+        [Column("difference")]
+        public int Difference { get; set; }
+
         [Column("stockCheckProduct_status")]
         public StockCheckProductStatus StockCheckProductStatus { get; set; }
 
         public void CalculateTheoreticalQuantity()
         {
             ExpectedQuantity = LastQuantity + TotalImportQuantity - TotalExportQuantity;
+            Difference = ActualQuantity - ExpectedQuantity;
         }
     }
 }

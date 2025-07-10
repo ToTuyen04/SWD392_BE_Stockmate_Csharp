@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Models.Entities
 {
-    [Table("NoteItem")]
+    [Table("noteitem")]
     [Index(nameof(NoteItemCode), IsUnique = true)]
     public class NoteItem
     {
@@ -18,9 +18,13 @@ namespace Repository.Models.Entities
         [StringLength(6)]
         public string NoteItemCode { get; set; }
 
+        [Column("product_code")]
+        public string ProductCode { get; set; }
         [ForeignKey("ProductCode")]
         public virtual Product Product { get; set; }
 
+        [Column("exchangeNote_id")]
+        public string ExchangeNoteId { get; set; }
         [ForeignKey("ExchangeNoteId")]
         public virtual ExchangeNote ExchangeNote { get; set; }
 

@@ -1,10 +1,7 @@
-﻿using Repository.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository.Data;
+using Repository.Models.Entities;
 using Repository.Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Repository
 {
@@ -12,5 +9,11 @@ namespace Repository.Repository
     {
         private readonly ApplicationDbContext _context;
         public WarehouseRepository(ApplicationDbContext context) => _context = context;
+
+        public async Task<Warehouse> GetByCode(string warehouseCode)
+        {
+            return await _context.Warehouses
+                .FirstOrDefaultAsync(w => w.WarehouseCode == warehouseCode);
+        }
     }
 }

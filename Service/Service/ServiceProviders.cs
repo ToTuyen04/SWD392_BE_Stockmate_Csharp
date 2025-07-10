@@ -18,8 +18,7 @@ namespace Service.Service
         private IProductService _productService;
         private IProductTypeService _productTypeService;
         private IRoleService _roleService;
-        private IStockCheckNoteService _stockCheckNoteService;
-        private IStockCheckProductService _stockCheckProductService;
+        private IStockCheckService _stockCheckService;
         private IStockTransactionService _stockTransactionService;
         private IUserService _userService;
         private IWarehouseService _warehouseService;
@@ -74,19 +73,11 @@ namespace Service.Service
             }
         }
 
-        public IStockCheckNoteService StockCheckNoteService
+        public IStockCheckService StockCheckService
         {
             get
             {
-                return _stockCheckNoteService ??= new StockCheckNoteService();
-            }
-        }
-
-        public IStockCheckProductService StockCheckProductService
-        {
-            get
-            {
-                return _stockCheckProductService ??= new StockCheckProductService();
+                return _stockCheckService ??= new StockCheckService();
             }
         }
 

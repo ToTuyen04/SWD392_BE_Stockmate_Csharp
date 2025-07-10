@@ -38,7 +38,8 @@ namespace Repository.Models.Enums
         CATEGORY_NOT_FOUND = 1036,
         PRODUCT_TYPE_CODE_EXIST = 1037,
         PRODUCT_TYPE_NOT_FOUND = 1038,
-        UNAUTHORIZED_ACTION = 1039
+        UNAUTHORIZED_ACTION = 1039,
+        INVALID_OPERATION = 1040
     }
 
     public static class ErrorCodeExtensions
@@ -84,6 +85,7 @@ namespace Repository.Models.Enums
                 ErrorCode.PRODUCT_TYPE_CODE_EXIST => "Product type is exist",
                 ErrorCode.PRODUCT_TYPE_NOT_FOUND => "Product type is not found",
                 ErrorCode.UNAUTHORIZED_ACTION => "You are not authorized to perform this action",
+                ErrorCode.INVALID_OPERATION => "Invalid operation",
                 _ => "Unknown error"
             };
         }
