@@ -66,12 +66,17 @@ namespace Repository.Data
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.ProductType)
                 .WithMany()
-                .HasForeignKey("ProductTypeCode")
+                .HasForeignKey(p => p.ProductTypeCode)
                 .HasPrincipalKey(pt => pt.ProductTypeCode);
 
             modelBuilder.Entity<Product>()
                 .HasIndex(p => p.ProductCode)
                 .IsUnique();
+
+            // Explicit column mapping for Product - commented out due to EF version conflict
+            // modelBuilder.Entity<Product>()
+            //     .Property(p => p.ProductTypeCode)
+            //     .HasColumnName("productType_code");
 
             // User relationships
             modelBuilder.Entity<User>()

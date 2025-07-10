@@ -85,8 +85,14 @@ namespace Repository.Repository
                     ProductTypeCode = request.ProductTypeCode,
                 };
 
+                // Debug: Log the product before saving
+                Console.WriteLine($"Creating product: ProductCode={product.ProductCode}, ProductTypeCode={product.ProductTypeCode}");
+
                 // Don't set navigation property to avoid EF confusion
                 _context.Products.Add(product);
+
+                // Debug: Log the SQL that will be executed
+                Console.WriteLine("About to save changes...");
                 await _context.SaveChangesAsync();
 
                 return new ProductResponse
@@ -123,13 +129,30 @@ namespace Repository.Repository
                 throw new KeyNotFoundException($"Product with code '{productCode}' not found.");
             }
 
-            // Update properties (không update ProductCode và ProductType)
+            // Validate ProductType exists if ProductTypeCode is being changed
+            if (product.ProductTypeCode != request.ProductTypeCode)
+            {
+                var productType = await _context.ProductTypes
+                    .FirstOrDefaultAsync(pt => pt.ProductTypeCode == request.ProductTypeCode);
+
+                if (productType == null)
+                {
+                    throw new KeyNotFoundException($"ProductType with code '{request.ProductTypeCode}' not found.");
+                }
+            }
+
+            // Update properties (không update ProductCode nhưng cho phép update ProductType)
             product.ProductName = request.ProductName;
             product.Size = request.Size;
             product.Color = request.Color;
             product.Quantity = request.Quantity;
+            product.ProductTypeCode = request.ProductTypeCode; // Allow ProductTypeCode update
+            product.UpdatedAt = DateTime.Now; // Update timestamp
 
             await _context.SaveChangesAsync();
+
+            // Reload ProductType to get updated information
+            await _context.Entry(product).Reference(p => p.ProductType).LoadAsync();
 
             return new ProductResponse
             {
@@ -138,7 +161,7 @@ namespace Repository.Repository
                 Size = product.Size,
                 Color = product.Color,
                 Quantity = product.Quantity,
-                ProductTypeName = product.ProductType.ProductTypeName,
+                ProductTypeName = product.ProductType?.ProductTypeName ?? "Unknown",
                 Status = product.Status
             };
         }

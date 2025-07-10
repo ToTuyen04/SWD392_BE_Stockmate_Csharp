@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Models.Entities
 {
-    [Table("ProductType")]
+    [Table("producttype")]
     [Index(nameof(ProductTypeCode), IsUnique = true)]
     public class ProductType
     {
