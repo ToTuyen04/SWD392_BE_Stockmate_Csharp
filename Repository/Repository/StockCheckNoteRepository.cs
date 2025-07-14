@@ -47,12 +47,9 @@ namespace Repository.Repository
                 StockCheckNoteId = stockCheckNoteId,
                 DateTime = DateTime.Now,
                 WarehouseCode = warehouse.WarehouseCode,
-                Warehouse = warehouse,
                 CheckerUserCode = checker.UserCode,
-                Checker = checker,
                 Description = request.Description ?? "",
-                StockCheckStatus = StockCheckStatus.pending,
-                StockCheckProducts = new List<StockCheckProduct>()
+                StockCheckStatus = StockCheckStatus.pending
             };
 
             _context.StockCheckNotes.Add(stockCheckNote);

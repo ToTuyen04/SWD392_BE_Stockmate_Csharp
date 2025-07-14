@@ -45,7 +45,7 @@ namespace Service.Service
                 }
 
                 // For now, use a default checker user code - in real implementation, get from authentication context
-                var checkerUserCode = "USR001"; // TODO: Get from authentication context
+                var checkerUserCode = "MA0001"; // TODO: Get from authentication context
 
                 // Create stock check note
                 var stockCheckNote = await _unitOfWork.StockCheckNoteRepository.Create(request, checkerUserCode);
@@ -65,7 +65,10 @@ namespace Service.Service
             }
             catch (Exception ex)
             {
-                throw new AppException(ErrorCode.UNKNOWN_ERROR, $"Error creating stock check note: {ex.Message}");
+                // Log the full exception details for debugging
+                var innerMessage = ex.InnerException?.Message ?? "No inner exception";
+                var fullMessage = $"Error creating stock check note: {ex.Message}. Inner: {innerMessage}";
+                throw new AppException(ErrorCode.UNKNOWN_ERROR, fullMessage);
             }
         }
 

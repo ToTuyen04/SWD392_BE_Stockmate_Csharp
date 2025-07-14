@@ -56,8 +56,8 @@ namespace Repository.Data
                         FullName = "Administrator",
                         Email = "admin@gmail.com",
                         Password = BCrypt.Net.BCrypt.HashPassword("admin123"),
-                        Role = adminRole,
-                        Warehouse = warehouse,
+                        RoleId = adminRole.RoleId,
+                        WarehouseCode = warehouse.WarehouseCode,
                         Status = UserStatus.active,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow

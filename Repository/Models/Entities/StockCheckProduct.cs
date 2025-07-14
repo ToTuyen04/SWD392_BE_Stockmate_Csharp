@@ -45,6 +45,7 @@ namespace Repository.Models.Entities
 
         [Required]
         [Column("difference")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int Difference { get; set; }
 
         [Column("stockCheckProduct_status")]
@@ -53,7 +54,7 @@ namespace Repository.Models.Entities
         public void CalculateTheoreticalQuantity()
         {
             ExpectedQuantity = LastQuantity + TotalImportQuantity - TotalExportQuantity;
-            Difference = ActualQuantity - ExpectedQuantity;
+            // Difference is computed by database, don't set it manually
         }
     }
 }

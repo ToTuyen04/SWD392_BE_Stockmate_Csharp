@@ -103,9 +103,7 @@ namespace Repository.Repository
             {
                 StockCheckProductId = stockCheckProductId,
                 StockCheckNoteId = stockCheckNote.StockCheckNoteId,
-                StockCheckNote = stockCheckNote,
                 ProductCode = product.ProductCode,
-                Product = product,
                 LastQuantity = lastQuantity,
                 ActualQuantity = request.ActualQuantity,
                 TotalImportQuantity = totalImport,
@@ -122,8 +120,8 @@ namespace Repository.Repository
 
             return new StockCheckProductResponse
             {
-                ProductCode = stockCheckProduct.Product.ProductCode,
-                ProductName = stockCheckProduct.Product.ProductName,
+                ProductCode = product.ProductCode,
+                ProductName = product.ProductName,
                 LastQuantity = stockCheckProduct.LastQuantity,
                 ActualQuantity = stockCheckProduct.ActualQuantity,
                 ExpectedQuantity = stockCheckProduct.ExpectedQuantity,
